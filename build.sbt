@@ -1,3 +1,6 @@
+import sbt.Keys._
+import sbtassembly.Plugin.AssemblyKeys._
+
 name := "ml_repository"
 
 version := "1.0"
@@ -29,3 +32,17 @@ lazy val akkaDependencies = {
 libraryDependencies ++= akkaDependencies
 libraryDependencies ++= hdfsDependencies
 
+assemblySettings
+mergeStrategy in assembly := {
+  case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+  case PathList("META-INF", "services", "org.apache.hadoop.fs.FileSystem") => MergeStrategy.filterDistinctLines
+  case m if m.startsWith("META-INF") => MergeStrategy.discard
+  case PathList("javax", "servlet", xs@_*) => MergeStrategy.first
+  case PathList("org", "apache", xs@_*) => MergeStrategy.first
+  case PathList("org", "jboss", xs@_*) => MergeStrategy.first
+  case "about.html" => MergeStrategy.rename
+  case "reference.conf" => MergeStrategy.concat
+  case PathList("org", "datanucleus", xs@_*) => MergeStrategy.discard
+  case _ => MergeStrategy.first
+}
+test in assembly := {}

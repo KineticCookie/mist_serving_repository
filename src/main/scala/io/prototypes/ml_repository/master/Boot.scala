@@ -44,7 +44,7 @@ object Boot extends App {
     case (name, source) =>
       println(s"DataSource detected: $name")
       val watcher = source match {
-        case s: LocalSource => system.actorOf(LocalSourceWatcher.props(s), s"LocalWatcher@${s.path.toString.replace("\\", "~")}")
+        case s: LocalSource => system.actorOf(LocalSourceWatcher.props(s), s"LocalWatcher@$name")
         case _ => throw new IllegalArgumentException("Unknown watcher")
       }
       watcher ! Messages.Watcher.Subscribe(repositoryActor)
